@@ -3,33 +3,65 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"time"
 
-	pb "gc-phase3-2/pb"
+	"client/model"
+	"client/pb"
 
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"google.golang.org/grpc"
 )
 
 func main() {
-  conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure(), grpc.WithBlock())
-  if err != nil {
-    log.Fatalf("did not connect: %v", err)
-  }
-  defer conn.Close()
-  c := pb.NewUserServiceClient(conn)
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Printf("Didn't connect: %v", err)
+	}
+	defer conn.Close()
+	client := pb.NewUserServiceClient(conn)
 
-  ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-  defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-  r, err := c.LoginUser(ctx, &pb.LoginRequest{Username: "test", Password: "password"})
-  if err != nil {
-    log.Fatalf("could not login: %v", err)
-  }
-  log.Printf("Login Response: %s", r.GetMessage())
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-  r2, err := c.RegisterUser(ctx, &pb.RegisterRequest{Username: "test", Password: "password"})
-  if err != nil {
-    log.Fatalf("could not register: %v", err)
-  }
-  log.Printf("Register Response: %s", r2.GetMessage())
+	err = godotenv.Load()
+	if err != nil {
+		log.Printf("Error loading .env file: %v", err)
+	}
+
+	e.POST("/users/login", func(c echo.Context) error {
+		var req model.LoginRequest
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
+		}
+		r, err := client.LoginUser(ctx, &pb.LoginRequest{Username: req.Username, Password: req.Password})
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "login error"})
+		}
+		log.Printf("Login Response: %s", r.GetMessage())
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": r.Message,
+		})
+	})
+	e.POST("/users/register", func(c echo.Context) error {
+		r, err := client.RegisterUser(ctx, &pb.RegisterRequest{Username: "test", Password: "password"})
+		if err != nil {
+			log.Printf("could not register: %v", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "registration failed"})
+		}
+		log.Printf("Register Response: %s", r.GetMessage())
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": r.Message,
+		})
+	})
+
+	e.Logger.Fatal(e.Start(":8080"))
 }

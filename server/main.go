@@ -1,46 +1,80 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
-	"net/http"
+	"net"
 	"os"
+	"server/config"
+	"server/model"
+	"server/repo"
 
-	"gc-phase3-2/config"
-	"gc-phase3-2/service"
+	pb "server/pb"
 
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"google.golang.org/grpc"
 )
 
+type AuthServiceServer struct {
+	pb.UnimplementedUserServiceServer
+}
+
+func (s *AuthServiceServer) LoginUser(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	user := model.User{
+		Username: req.Username,
+		Password: req.Password,
+	}
+
+	log.Printf("User object: %+v", user)
+
+	token, err := repo.NewUserRepository(config.DB).LoginUser(user)
+	if err != nil {
+		debug:= fmt.Sprintf("Login failed: %s", user.Username)
+		return &pb.LoginResponse{Message: debug}, err
+	}
+
+	return &pb.LoginResponse{Message: token}, nil
+}
+
+func (s *AuthServiceServer) RegisterUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+  // Implement your registration logic here
+  return &pb.RegisterResponse{Message: "Registration successful"}, nil
+}
+
 func main() {
-        e := echo.New()
+	// e := echo.New()
+	// e.Use(middleware.Logger())
+	// e.Use(middleware.Recover())
 
-        e.Use(middleware.Logger())
-	    e.Use(middleware.Recover())
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
-        err := godotenv.Load()
-        if err != nil {
-            log.Fatalf("Error loading .env file")
-        }
+	// e.POST("/users/login", service.LoginUser)
+	// e.POST("/users/register", service.RegisterUser)
 
-		e.GET("/", func(c echo.Context) error {
-			return c.String(http.StatusOK, "test heroku livecode 3")
-		})
-		e.POST("/users/login", service.LoginUser)
-        e.POST("/users/register", service.RegisterUser)
+	config.InitDB()
+	defer config.CloseDB()
 
+	config.ClearPreparedStatements()
 
-        config.InitDB()
-	    defer config.CloseDB()
+	grpcPort := os.Getenv("GRPC_PORT")
+	if grpcPort == "" {
+		grpcPort = "50051"
+	}
 
-	    config.ClearPreparedStatements()
-    
-        port := os.Getenv("PORT")
-        if port == "" {
-            port = "8080" 
-        }
+	lis, err := net.Listen("tcp", ":"+grpcPort)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 
-        e.Logger.Fatal(e.Start(":" + port))
+	s := grpc.NewServer()
+	pb.RegisterUserServiceServer(s, &AuthServiceServer{})
 
-    }
+	log.Printf("gRPC server listening at %v", lis.Addr())
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}

@@ -1,11 +1,11 @@
-package service
+package repo
 
 import (
 	"fmt"
-	"gc-phase3-2/config"
-	"gc-phase3-2/model"
 	"net/http"
 	"os"
+	"server/config"
+	"server/model"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -13,25 +13,35 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
-func LoginUser(c echo.Context) error {
-	var req model.LoginRequest
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
-	}
+type UserRepository struct {
+	Db *gorm.DB
+}
 
-	var user model.User
-	if err := config.DB.Table("users_g2p3w2").Where("username = ?", req.Username).First(&user).Error; err != nil {
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return UserRepository{
+		Db: db,
+	}
+}
+
+func (u UserRepository) LoginUser(user model.User) (string, error) {
+	tokenString := ""
+
+	var userGet model.User
+	if err := config.DB.Table("users_g2p3w2").Where("username = ?", user.Username).First(&userGet).Error; err != nil {
 		if err == gorm.ErrRecordNotFound{
-			return c.JSON(http.StatusUnauthorized, map[string]string{"message": "user not found"})
+			return tokenString, status.Errorf(codes.NotFound, "user %s not found %s", user.Username, user.Password)
 		}
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "internal server error", "detail": err.Error()})
+		return tokenString, status.Error(codes.Internal, err.Error())
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"message": "invalid password"})
+	errString := fmt.Sprintf("invalid username or password for user %s password %s", user.Username, user.Password)
+	if err := bcrypt.CompareHashAndPassword( []byte(userGet.Password), []byte(user.Password)); err != nil {
+		return errString, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -41,10 +51,10 @@ func LoginUser(c echo.Context) error {
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "internal server error", "detail": err.Error()})
+		return tokenString, status.Error(codes.Internal, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, model.LoginResponse{Token: tokenString})
+	return tokenString, nil
 }
 
 func validateRegisterUser(user model.RegisterUser) error {
