@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 
-func InitDB() (*gorm.DB, error) {
+func InitDB() {
     dsn := os.Getenv("DATABASE_URL")
     var err error
     DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -19,8 +19,6 @@ func InitDB() (*gorm.DB, error) {
     if err != nil {
         log.Fatalf("Error connecting to database: %v", err)
     }
-
-	return DB, err
 }
 
 func CloseDB() {
