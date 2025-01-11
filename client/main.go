@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"log"
 
+	// "github.com/gofiber/fiber/middleware"
 	"github.com/labstack/echo"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -13,7 +15,8 @@ import (
 
 func main() {
 	e := echo.New()
-	token := "Bearer 1234"
+	// e.Use(middleware.Logger(), middleware.Recover(), middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
+	token := os.Getenv("")
 
 	e.POST("/send-message", func(c echo.Context) error {
 		var message map[string]string
