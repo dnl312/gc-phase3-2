@@ -13,8 +13,8 @@ type UserRepository struct{
 	DB *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{DB: db}
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return UserRepository{DB: db}
 }
 
 func (c UserRepository) RegisterUser(data *models.User) error {
