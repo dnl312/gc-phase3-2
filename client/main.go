@@ -22,6 +22,7 @@ func main() {
 	}
 	defer conn.Close()
 	client := pb.NewUserServiceClient(conn)
+	clientBook := pb.NewBookServiceClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -65,6 +66,23 @@ func main() {
 
 		return c.JSON(http.StatusOK, map[string]string{
 			"message": r.Message,
+		})
+	})
+
+	a := e.Group("/books")
+	a.GET("", func(c echo.Context) error {
+		status := c.QueryParam("status")
+		if status == "" {
+			status = "Available"
+		}
+		r, err := clientBook.GetAllBooks(ctx, &pb.GetAllBooksRequest{Status: status})
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not get books"})
+		}
+		log.Printf("Books Response: %v", r.GetBooks())
+		
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"books": r.Books,
 		})
 	})
 
