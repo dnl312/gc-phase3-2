@@ -33,8 +33,18 @@ func (r BookRepository) GetAllBooks (status string) ([]model.Book, error) {
 }
 
 func (r BookRepository) BorrowBook (userId string, bookId string)  error {
+	    // Check if the user exists
+    var user model.User
+    err := r.DB.Table("users_g2p3w2").Where("id = ?", userId).First(&user).Error
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return fmt.Errorf("user does not exist")
+        }
+        return err
+    }
+
 	var book model.Book
-	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).First(&book).Error
+	err = r.DB.Table("books_g2p3w2").Where("id = ?", bookId).First(&book).Error
 	if err != nil {
 		return err
 	}
@@ -65,7 +75,16 @@ func (r BookRepository) BorrowBook (userId string, bookId string)  error {
 
 func (r BookRepository) ReturnBook (userId string, bookId string) error {
 	log.Printf("ReturnBook1: %s %s", userId, bookId)
-	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"userid": nil, "status": "Available"}).Error
+	var user model.User
+    err := r.DB.Table("users_g2p3w2").Where("id = ?", userId).First(&user).Error
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return fmt.Errorf("user does not exist")
+        }
+        return err
+    }
+	
+	err = r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"userid": nil, "status": "Available"}).Error
 	if err != nil {
 		return err
 	}

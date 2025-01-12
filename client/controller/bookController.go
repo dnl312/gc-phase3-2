@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"client/helpers"
 	"client/model"
 	pb "client/pb/bookpb"
 	"context"
@@ -76,11 +75,12 @@ func (b BookController) BorrowBook(ctx echo.Context) error{
 		if err := ctx.Bind(&req); err != nil {
 			return ctx.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
 		}
-		
-		serviceCtx, cancel, _ , err := helpers.NewServiceContext()
-		if err != nil {
-			return err
-		}
+
+		token := ctx.Request().Header.Get("Authorization")
+		md := metadata.Pairs("Authorization", token)
+		newCtx := metadata.NewOutgoingContext(context.Background(), md)
+
+		serviceCtx, cancel := context.WithTimeout(newCtx, 10*time.Second)
 		defer cancel()
 
 		r, err := b.Client.BorrowBook(serviceCtx, &pb.BorrowBookRequest{UserId: req.UserID, BookId: req.BookID})
@@ -101,10 +101,11 @@ func (b BookController) ReturnBook(ctx echo.Context) error{
 		}
 		log.Printf("ReturnBook1: %s %s", req.UserID, req.BookID)
 
-		serviceCtx, cancel, _ , err := helpers.NewServiceContext()
-		if err != nil {
-			return err
-		}
+		token := ctx.Request().Header.Get("Authorization")
+		md := metadata.Pairs("Authorization", token)
+		newCtx := metadata.NewOutgoingContext(context.Background(), md)
+
+		serviceCtx, cancel := context.WithTimeout(newCtx, 10*time.Second)
 		defer cancel()
 
 		r, err := b.Client.ReturnBook(serviceCtx, &pb.ReturnBookRequest{UserId: req.UserID, BookId: req.BookID})

@@ -35,6 +35,11 @@ func AuthInterceptor(ctx context.Context) (context.Context, error) {
 
 	log.Printf("Metadata received: %v", md)
 
+	authHeader, ok := md["authorization"]
+    if !ok || len(authHeader) == 0 {
+        return nil, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
+    }
+
 	token := md["authorization"]
 
 	parts := strings.Split(token[0], " ")
