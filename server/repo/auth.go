@@ -43,7 +43,7 @@ func (u UserRepository) LoginUser(user model.User) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
+		"userid": userGet.ID,
 		"exp" : jwt.TimeFunc().Add(time.Hour * 72).Unix(),
 	})
 
