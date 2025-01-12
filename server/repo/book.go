@@ -64,12 +64,14 @@ func (r BookRepository) BorrowBook (userId string, bookId string)  error {
 }
 
 func (r BookRepository) ReturnBook (userId string, bookId string) error {
+	log.Printf("ReturnBook1: %s %s", userId, bookId)
 	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"userid": nil, "status": "Available"}).Error
 	if err != nil {
 		return err
 	}
 
-	err = r.DB.Table("borrowedbooks_g2p3w2").Where("book_id = ? AND user_id = ? AND return_date IS NULL", bookId, userId).Updates(map[string]interface{}{"returndate": time.Now()}).Error
+	log.Printf("ReturnBook2: %s %s", userId, bookId)
+	err = r.DB.Table("borrowedbooks_g2p3w2").Where("bookid = ? AND userid = ? AND returndate IS NULL", bookId, userId).Updates(map[string]interface{}{"returndate": time.Now()}).Error
 	if err != nil {
 		return err
 	}

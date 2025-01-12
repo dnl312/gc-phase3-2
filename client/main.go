@@ -100,6 +100,22 @@ func main() {
 			"message": r.Message,
 		})
 	})
+	a.POST("/return", func(c echo.Context) error {
+		var req model.BookTransaction
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
+		}
+		log.Printf("ReturnBook1: %s %s", req.UserID, req.BookID)
+		r, err := clientBook.ReturnBook(ctx, &pb.ReturnBookRequest{UserId: req.UserID, BookId: req.BookID})
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not return book"})
+		}	
+		log.Printf("Return Response: %s", r.GetMessage())
+	
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": r.Message,
+		})
+	})
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
