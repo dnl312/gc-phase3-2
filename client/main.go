@@ -51,9 +51,14 @@ func main() {
 		})
 	})
 	e.POST("/users/register", func(c echo.Context) error {
-		r, err := client.RegisterUser(ctx, &pb.RegisterRequest{Username: "test", Password: "password"})
+		var req model.RegisterUser
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
+		}
+		r, err := client.RegisterUser(ctx, &pb.RegisterRequest{Username: req.Username, Password: req.Password})
 		if err != nil {
 			log.Printf("could not register: %v", err)
+			log.Printf("could not register: %v", req)
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "registration failed"})
 		}
 		log.Printf("Register Response: %s", r.GetMessage())

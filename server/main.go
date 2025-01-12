@@ -21,6 +21,9 @@ type AuthServiceServer struct {
 }
 
 func (s *AuthServiceServer) LoginUser(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	config.InitDB()
+	defer config.CloseDB()
+
 	user := model.User{
 		Username: req.Username,
 		Password: req.Password,
@@ -38,7 +41,22 @@ func (s *AuthServiceServer) LoginUser(ctx context.Context, req *pb.LoginRequest)
 }
 
 func (s *AuthServiceServer) RegisterUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-  // Implement your registration logic here
+  	config.InitDB()
+	defer config.CloseDB()
+	
+	user := model.RegisterUser{
+		Username: req.Username,
+		Password: req.Password,
+	}
+
+	log.Printf("User object: %+v", user)
+
+	err := repo.NewUserRepository(config.DB).RegisterUser(user)
+	if err != nil {
+		debug:= fmt.Sprintf("Login failed: %s", user.Username)
+		return &pb.RegisterResponse{Message: debug}, err
+	}
+
   return &pb.RegisterResponse{Message: "Registration successful"}, nil
 }
 

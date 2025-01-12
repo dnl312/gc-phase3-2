@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"server/config"
 	"server/model"
@@ -11,7 +10,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -71,20 +69,20 @@ func validateRegisterUser(user model.RegisterUser) error {
     return nil
 }
 
-func RegisterUser(c echo.Context) error {
-	var user model.RegisterUser
-	if err := c.Bind(&user); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
-	}
+func (u UserRepository) RegisterUser(user model.RegisterUser) error {
+	// var user model.RegisterUser
+	// if err := c.Bind(&user); err != nil {
+	// 	return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
+	// }
 
 	err := validateRegisterUser(user)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+		return status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "internal server error", "detail": err.Error()})
+		return status.Error(codes.Internal, err.Error())
 	}	
 
 	newUser := model.User{
@@ -94,13 +92,8 @@ func RegisterUser(c echo.Context) error {
 	}
 
 	if err := config.DB.Table("users_g2p3w2").Create(&newUser).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "internal server error", "detail": err.Error()})
+		return status.Error(codes.Internal, err.Error())
 	}
 
-	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"message": "success register",
-		"user": map[string]string{
-			"Name":  newUser.Username,
-		},
-	})
+	return nil
 }
