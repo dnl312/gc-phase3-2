@@ -1,105 +1,95 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"net"
-	"os"
 	"server/config"
-	"server/model"
+	"server/controller"
 	"server/repo"
 
-	pb "server/pb"
-
 	"github.com/joho/godotenv"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-type AuthServiceServer struct {
-	pb.UnimplementedUserServiceServer
-}
+// type AuthServiceServer struct {
+// 	pb.UnimplementedUserServiceServer
+// }
 
-type BookServiceServer struct {
-	pb.UnimplementedBookServiceServer
-}
+// type BookServiceServer struct {
+// 	pb.UnimplementedBookServiceServer
+// }
 
-func (s *AuthServiceServer) LoginUser(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-	
-	
-	user := model.User{
-		Username: req.Username,
-		Password: req.Password,
-	}
+// // func (s *AuthServiceServer) LoginUser(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 
-	log.Printf("User object: %+v", user)
+// // 	user := model.User{
+// // 		Username: req.Username,
+// // 		Password: req.Password,
+// // 	}
 
-	token, err := repo.NewUserRepository(config.DB).LoginUser(user)
-	if err != nil {
-		debug := fmt.Sprintf("Login failed: %s", user.Username)
-		return &pb.LoginResponse{Message: debug}, err
-	}
+// // 	log.Printf("User object: %+v", user)
 
-	return &pb.LoginResponse{Message: token}, nil
-}
+// // 	token, err := repo.NewUserRepository(config.DB).LoginUser(user)
+// // 	if err != nil {
+// // 		debug := fmt.Sprintf("Login failed: %s", user.Username)
+// // 		return &pb.LoginResponse{Message: debug}, err
+// // 	}
 
-func (s *AuthServiceServer) RegisterUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	user := model.RegisterUser{
-		Username: req.Username,
-		Password: req.Password,
-	}
+// // 	return &pb.LoginResponse{Message: token}, nil
+// // }
 
-	log.Printf("User object: %+v", user)
+// // func (s *AuthServiceServer) RegisterUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+// // 	user := model.RegisterUser{
+// // 		Username: req.Username,
+// // 		Password: req.Password,
+// // 	}
 
-	err := repo.NewUserRepository(config.DB).RegisterUser(user)
-	if err != nil {
-		debug := fmt.Sprintf("Registration failed: %s", user.Username)
-		return &pb.RegisterResponse{Message: debug}, err
-	}
+// // 	log.Printf("User object: %+v", user)
 
-	return &pb.RegisterResponse{Message: "Registration successful"}, nil
-}
+// // 	err := repo.NewUserRepository(config.DB).RegisterUser(user)
+// // 	if err != nil {
+// // 		debug := fmt.Sprintf("Registration failed: %s", user.Username)
+// // 		return &pb.RegisterResponse{Message: debug}, err
+// // 	}
 
-func (b *BookServiceServer) GetAllBooks(ctx context.Context, req *pb.GetAllBooksRequest) (*pb.GetAllBooksResponse, error) {
-    books, err := repo.NewBookRepository(config.DB).GetAllBooks(req.Status)
-    if err != nil {
-        log.Printf("Error fetching books (status=%s): %v", req.Status, err)
-        return nil, status.Errorf(codes.Internal, "failed to fetch books: %v", err) // Return error specific to this method
-    }
+// // 	return &pb.RegisterResponse{Message: "Registration successful"}, nil
+// // }
 
-    var responseBooks []*pb.Book
-    for _, book := range books {
-        responseBooks = append(responseBooks, &pb.Book{
-            Id:    book.ID,
-            Title: book.Title,
-            Status: book.Status,
-        })
-    }
+// func (b *BookServiceServer) GetAllBooks(ctx context.Context, req *pb.GetAllBooksRequest) (*pb.GetAllBooksResponse, error) {
+//     books, err := repo.NewBookRepository(config.DB).GetAllBooks(req.Status)
+//     if err != nil {
+//         log.Printf("Error fetching books (status=%s): %v", req.Status, err)
+//         return nil, status.Errorf(codes.Internal, "failed to fetch books: %v", err) // Return error specific to this method
+//     }
 
-    return &pb.GetAllBooksResponse{Books: responseBooks}, nil
-}
+//     var responseBooks []*pb.Book
+//     for _, book := range books {
+//         responseBooks = append(responseBooks, &pb.Book{
+//             Id:    book.ID,
+//             Title: book.Title,
+//             Status: book.Status,
+//         })
+//     }
 
-func (b *BookServiceServer) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb.BorrowBookResponse, error) {
-	err := repo.NewBookRepository(config.DB).BorrowBook(req.UserId, req.BookId)
-	if err != nil {
-		log.Printf("Error borrowing book (userId=%s, bookId=%s): %v", req.UserId, req.BookId, err)
-		return nil, status.Errorf(codes.Internal, "failed to borrow book: %v", err) // Return error specific to this method
-	}
+//     return &pb.GetAllBooksResponse{Books: responseBooks}, nil
+// }
 
-	return &pb.BorrowBookResponse{Message: "Book borrowed successfully"}, nil
-}
+// func (b *BookServiceServer) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb.BorrowBookResponse, error) {
+// 	err := repo.NewBookRepository(config.DB).BorrowBook(req.UserId, req.BookId)
+// 	if err != nil {
+// 		log.Printf("Error borrowing book (userId=%s, bookId=%s): %v", req.UserId, req.BookId, err)
+// 		return nil, status.Errorf(codes.Internal, "failed to borrow book: %v", err) // Return error specific to this method
+// 	}
 
-func (b *BookServiceServer) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest) (*pb.ReturnBookResponse, error) {
-	err := repo.NewBookRepository(config.DB).ReturnBook(req.UserId, req.BookId)
-	if err != nil {
-		log.Printf("Error returning book (userId=%s, bookId=%s): %v", req.UserId, req.BookId, err)
-		return nil, status.Errorf(codes.Internal, "failed to return book: %v", err) // Return error specific to this method
-	}
+// 	return &pb.BorrowBookResponse{Message: "Book borrowed successfully"}, nil
+// }
 
-	return &pb.ReturnBookResponse{Message: "Book returned successfully"}, nil
-}
+// func (b *BookServiceServer) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest) (*pb.ReturnBookResponse, error) {
+// 	err := repo.NewBookRepository(config.DB).ReturnBook(req.UserId, req.BookId)
+// 	if err != nil {
+// 		log.Printf("Error returning book (userId=%s, bookId=%s): %v", req.UserId, req.BookId, err)
+// 		return nil, status.Errorf(codes.Internal, "failed to return book: %v", err) // Return error specific to this method
+// 	}
+
+// 	return &pb.ReturnBookResponse{Message: "Book returned successfully"}, nil
+// }
 
 func main() {
 	// e := echo.New()
@@ -114,27 +104,36 @@ func main() {
 	// e.POST("/users/login", service.LoginUser)
 	// e.POST("/users/register", service.RegisterUser)
 
-	config.InitDB()
-	defer config.CloseDB()
+	db, err := config.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
 
 	config.ClearPreparedStatements()
+	
+	defer config.CloseDB()
+	userRepository := repo.NewUserRepository(db)
+	userController := controller.NewAuthController(userRepository)
 
-	grpcPort := os.Getenv("GRPC_PORT")
-	if grpcPort == "" {
-		grpcPort = "50051"
-	}
+	config.ListenAndServeGrpc(&userController)
+	// config.ClearPreparedStatements()
 
-	lis, err := net.Listen("tcp", ":"+grpcPort)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
+	// grpcPort := os.Getenv("GRPC_PORT")
+	// if grpcPort == "" {
+	// 	grpcPort = "50051"
+	// }
 
-	s := grpc.NewServer()
-	pb.RegisterUserServiceServer(s, &AuthServiceServer{})
-	pb.RegisterBookServiceServer(s, &BookServiceServer{})
+	// lis, err := net.Listen("tcp", ":"+grpcPort)
+	// if err != nil {
+	// 	log.Fatalf("failed to listen: %v", err)
+	// }
 
-	log.Printf("gRPC server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	// s := grpc.NewServer()
+	// pb.RegisterUserServiceServer(s, &AuthServiceServer{})
+	// pb.RegisterBookServiceServer(s, &BookServiceServer{})
+
+	// log.Printf("gRPC server listening at %v", lis.Addr())
+	// if err := s.Serve(lis); err != nil {
+	// 	log.Fatalf("failed to serve: %v", err)
+	// }
 }

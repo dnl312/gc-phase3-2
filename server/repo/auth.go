@@ -2,6 +2,7 @@ package repo
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"server/config"
 	"server/model"
@@ -56,6 +57,7 @@ func (u UserRepository) LoginUser(user model.User) (string, error) {
 }
 
 func validateRegisterUser(user model.RegisterUser) error {
+	log.Printf("Validating user: %+v", user)
     validate := validator.New()
     err := validate.Struct(user)
     if err != nil {

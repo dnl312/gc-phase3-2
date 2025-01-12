@@ -6,8 +6,10 @@ require (
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/google/uuid v1.6.0
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.13.3
+	github.com/rs/zerolog v1.33.0
 	golang.org/x/crypto v0.31.0
 	google.golang.org/grpc v1.69.2
 	google.golang.org/protobuf v1.35.1
