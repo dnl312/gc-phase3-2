@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"client/model"
-	"client/pb"
+	pb "client/pb/authpb"
+	pbBook "client/pb/bookpb"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -22,7 +23,7 @@ func main() {
 	}
 	defer conn.Close()
 	client := pb.NewUserServiceClient(conn)
-	clientBook := pb.NewBookServiceClient(conn)
+	clientBook := pbBook.NewBookServiceClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -75,7 +76,7 @@ func main() {
 		if status == "" {
 			status = "Available"
 		}
-		r, err := clientBook.GetAllBooks(ctx, &pb.GetAllBooksRequest{Status: status})
+		r, err := clientBook.GetAllBooks(ctx, &pbBook.GetAllBooksRequest{Status: status})
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not get books"})
 		}
@@ -90,7 +91,7 @@ func main() {
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
 		}
-		r, err := clientBook.BorrowBook(ctx, &pb.BorrowBookRequest{UserId: req.UserID, BookId: req.BookID})
+		r, err := clientBook.BorrowBook(ctx, &pbBook.BorrowBookRequest{UserId: req.UserID, BookId: req.BookID})
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not borrow book"})
 		}
@@ -106,7 +107,7 @@ func main() {
 			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
 		}
 		log.Printf("ReturnBook1: %s %s", req.UserID, req.BookID)
-		r, err := clientBook.ReturnBook(ctx, &pb.ReturnBookRequest{UserId: req.UserID, BookId: req.BookID})
+		r, err := clientBook.ReturnBook(ctx, &pbBook.ReturnBookRequest{UserId: req.UserID, BookId: req.BookID})
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not return book"})
 		}	
