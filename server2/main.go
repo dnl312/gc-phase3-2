@@ -112,10 +112,10 @@ func main() {
 	config.ClearPreparedStatements()
 	
 	defer config.CloseDB()
-	userRepository := repo.NewUserRepository(db)
-	userController := controller.NewAuthController(userRepository)
+	bookRepository := repo.NewBookRepository(db)
+	bookController := controller.NewBookController(bookRepository)
 
-	config.ListenAndServeGrpc(&userController)
+	config.ListenAndServeGrpc(&bookController)
 	// config.ClearPreparedStatements()
 
 	// grpcPort := os.Getenv("GRPC_PORT")

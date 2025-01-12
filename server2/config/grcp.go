@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func ListenAndServeGrpc(controller pb.UserServiceServer) {
+func ListenAndServeGrpc(controller pb.BookServiceServer) {
 	port := os.Getenv("GRPC_PORT")
 	
 	lis, err := net.Listen("tcp", ":" + port)
@@ -26,7 +26,7 @@ func ListenAndServeGrpc(controller pb.UserServiceServer) {
 			logging.UnaryServerInterceptor(middleware.NewInterceptorLogger()),
 		),
 	)
-	pb.RegisterUserServiceServer(grpcServer, controller)
+	pb.RegisterBookServiceServer(grpcServer, controller)
 	//pb.RegisterUserServer(grpcServer, controller)
 
 	log.Println("\033[36mGRPC server is running on port:", port, "\033[0m")
