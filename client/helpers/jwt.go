@@ -3,6 +3,7 @@ package helpers
 import (
 	"client/model"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -37,6 +38,8 @@ func SignNewJWT(c echo.Context, user model.User) error{
 
 func SignJwtForGrpc() (string, error) {
 	secret := os.Getenv("JWT_SECRET")
+
+	log.Printf("JWT_SECRET: %v", secret)
 
 	claims := &jwt.RegisteredClaims{
 		ExpiresAt: jwt.NewNumericDate(time.Now().AddDate(0, 0, 1)),

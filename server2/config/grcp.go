@@ -1,17 +1,53 @@
 package config
 
 import (
+	"context"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"server/middleware"
 	"server/pb"
-
-	// grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"strings"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
+
+func UnaryAuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	ctx, err := AuthInterceptor(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return handler(ctx, req)
+}
+
+func AuthInterceptor(ctx context.Context) (context.Context, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+
+	if !ok {
+		log.Println("No metadata found")
+		return nil, status.Errorf(codes.Unauthenticated, "Unauthorized")
+	}
+
+	log.Printf("Metadata received: %v", md)
+
+	token := md["authorization"]
+
+	parts := strings.Split(token[0], " ")
+	tokenString := parts[1]
+
+	
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return nil, status.Errorf(http.StatusUnauthorized, "Invalid Authorization Header Format")
+	}
+
+	log.Println("Token validated successfully with value:", tokenString)
+	return ctx, nil
+}
 
 func ListenAndServeGrpc(controller pb.BookServiceServer) {
 	port := os.Getenv("GRPC_PORT")
@@ -22,6 +58,7 @@ func ListenAndServeGrpc(controller pb.BookServiceServer) {
 	}
 	
 	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(UnaryAuthInterceptor),
 		grpc.ChainUnaryInterceptor(
 			logging.UnaryServerInterceptor(middleware.NewInterceptorLogger()),
 		),

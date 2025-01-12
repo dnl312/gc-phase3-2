@@ -23,6 +23,7 @@ func NewBookController(r repo.BookInterce) Server {
 }
 
 func (b *Server) GetAllBooks(ctx context.Context, req *pb.GetAllBooksRequest) (*pb.GetAllBooksResponse, error) {
+	log.Printf("Fetching books with status: %s", req.Status)
     books, err := repo.NewBookRepository(config.DB).GetAllBooks(req.Status)
     if err != nil {
         log.Printf("Error fetching books (status=%s): %v", req.Status, err)

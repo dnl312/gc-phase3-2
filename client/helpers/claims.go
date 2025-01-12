@@ -16,7 +16,7 @@ func GetClaims(c echo.Context) (model.Claims, error) {
 
 	claims := claimsTmp.(jwt.MapClaims)
 	return model.Claims{
-		Exp: claims["exp"].(string),
+		Exp: claims["exp"].(float64),
 		UserID:  claims["userid"].(string),
 	}, nil
 }

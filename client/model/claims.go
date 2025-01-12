@@ -1,6 +1,6 @@
 package model
 
 type Claims struct {
-	Exp    string  `json:"exp"`
+	Exp    float64  `json:"exp"`
 	UserID string `json:"userid"`
 }

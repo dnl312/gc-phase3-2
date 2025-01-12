@@ -10,12 +10,14 @@ import (
 
 func RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cookie, err := c.Cookie("Authorization")
-		if err != nil {
-			return echo.NewHTTPError(echo.ErrUnauthorized.Code, "Authorization cookie does not exist")
+		authHeader := c.Request().Header.Get("Authorization")
+		if authHeader == "" {
+			return echo.NewHTTPError(echo.ErrUnauthorized.Code, "Authorization header is missing")
 		}
 
-		tokenString := cookie.Value
+		tokenString := authHeader[len("Bearer "):]
+
+		// tokenString := cookie.Value
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); ! ok {
 				return nil, fmt.Errorf("failed to verify token signature")

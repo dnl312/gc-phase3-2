@@ -110,7 +110,7 @@ func main() {
 	}
 
 	config.ClearPreparedStatements()
-	
+	log.Printf("Connected to database")
 	defer config.CloseDB()
 	bookRepository := repo.NewBookRepository(db)
 	bookController := controller.NewBookController(bookRepository)

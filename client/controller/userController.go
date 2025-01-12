@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"client/helpers"
 	"client/model"
 	pb "client/pb/authpb"
 	"context"
@@ -54,10 +53,7 @@ func (u UserController) RegisterUser (ctx echo.Context) error{
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
 	}
 
-	serviceCtx, cancel, err := helpers.NewServiceContext()
-	if err != nil {
-		return err
-	}
+	serviceCtx, cancel:= context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	r, err := u.Client.RegisterUser(serviceCtx, &pb.RegisterRequest{Username: req.Username, Password: req.Password})
