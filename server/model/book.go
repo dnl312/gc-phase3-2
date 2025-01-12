@@ -13,8 +13,13 @@ type Book struct {
 
 type BorrowedBook struct {
 	ID           string     `gorm:"type:char(36);primaryKey;not null"`
-	BookID       string     `gorm:"type:char(36);not null;constraint:OnDelete:CASCADE"`
-	UserID       string     `gorm:"type:char(36);not null;constraint:OnDelete:CASCADE"`
-	BorrowedDate time.Time  `gorm:"not null;default:CURRENT_TIMESTAMP"`
-	ReturnDate   *time.Time `gorm:"default:null"`
+	Bookid       string     `gorm:"type:char(36);not null;constraint:OnDelete:CASCADE"`
+	Userid       string     `gorm:"type:char(36);not null;constraint:OnDelete:CASCADE"`
+	Borroweddate time.Time  `gorm:"not null;default:CURRENT_TIMESTAMP"`
+	Returndate   *time.Time `gorm:"default:null"`
+}
+
+type BookTransaction struct {
+	Userid        string    `gorm:"type:char(36);default:null"`
+	Bookid        string    `gorm:"type:char(36);default:null"`
 }

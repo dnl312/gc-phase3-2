@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"fmt"
 	"log"
 	"server/model"
 	"time"
@@ -32,16 +33,28 @@ func (r BookRepository) GetAllBooks (status string) ([]model.Book, error) {
 }
 
 func (r BookRepository) BorrowBook (userId string, bookId string)  error {
-	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"user_id": userId, "status": "Borrowed"}).Error
+	var book model.Book
+	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).First(&book).Error
+	if err != nil {
+		return err
+	}
+
+	if book.Status != "Available" {
+		return fmt.Errorf("book is not available for borrowing")
+	}
+
+
+	err = r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"userid": userId, "status": "Borrowed"}).Error
 	if err != nil {
 		return err
 	}
 
 	var borrowedBook model.BorrowedBook
 	borrowedBook.ID = uuid.New().String()
-	borrowedBook.BookID = bookId
-	borrowedBook.UserID = userId
-	borrowedBook.BorrowedDate = time.Now()
+	borrowedBook.Bookid = bookId
+	borrowedBook.Userid = userId
+	borrowedBook.Borroweddate = time.Now()
+
 	err = r.DB.Table("borrowedbooks_g2p3w2").Create(&borrowedBook).Error
 	if err != nil {
 		return err
@@ -51,12 +64,12 @@ func (r BookRepository) BorrowBook (userId string, bookId string)  error {
 }
 
 func (r BookRepository) ReturnBook (userId string, bookId string) error {
-	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"user_id": nil, "status": "Available"}).Error
+	err := r.DB.Table("books_g2p3w2").Where("id = ?", bookId).Updates(map[string]interface{}{"userid": nil, "status": "Available"}).Error
 	if err != nil {
 		return err
 	}
 
-	err = r.DB.Table("borrowedbooks_g2p3w2").Where("book_id = ? AND user_id = ? AND return_date IS NULL", bookId, userId).Updates(map[string]interface{}{"return_date": time.Now()}).Error
+	err = r.DB.Table("borrowedbooks_g2p3w2").Where("book_id = ? AND user_id = ? AND return_date IS NULL", bookId, userId).Updates(map[string]interface{}{"returndate": time.Now()}).Error
 	if err != nil {
 		return err
 	}

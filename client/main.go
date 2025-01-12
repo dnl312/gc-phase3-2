@@ -85,6 +85,21 @@ func main() {
 			"books": r.Books,
 		})
 	})
+	a.POST("/borrow", func(c echo.Context) error {
+		var req model.BookTransaction
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
+		}
+		r, err := clientBook.BorrowBook(ctx, &pb.BorrowBookRequest{UserId: req.UserID, BookId: req.BookID})
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "could not borrow book"})
+		}
+		log.Printf("Borrow Response: %s", r.GetMessage())
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": r.Message,
+		})
+	})
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
