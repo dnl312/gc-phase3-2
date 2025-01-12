@@ -1,7 +1,7 @@
 package model
 
 type LoginRequest struct {
-	Username    string `json:"username" validate:"required,email"`
+	Username    string `json:"username" validate:"required,username"`
 	Password string `json:"password" validate:"required"`
 }
 
