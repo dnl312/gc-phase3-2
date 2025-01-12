@@ -49,7 +49,7 @@ func (u UserController) LoginUser (ctx echo.Context) error{
 
 func (u UserController) RegisterUser (ctx echo.Context) error{
 	var req model.RegisterUser
-	if err := ctx.Bind(req); err != nil {
+	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"message": "invalid request parameters"})
 	}
 
