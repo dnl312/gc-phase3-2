@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    environment:
+      - USER_SERVICE_URI=server:50051
+      - BOOK_SERVICE_URI=server2:50052
+    ports:
+      - "8080:8080"
