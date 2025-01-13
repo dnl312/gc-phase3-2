@@ -3,7 +3,7 @@ package repo
 import (
 	"fmt"
 	"log"
-	"server/model"
+	"server2/model"
 	"time"
 
 	"github.com/google/uuid"

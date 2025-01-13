@@ -1,6 +1,6 @@
 package repo
 
-import "server/model"
+import "server2/model"
 
 type BookInterce interface {
 	GetAllBooks(status string) ([]model.Book, error)

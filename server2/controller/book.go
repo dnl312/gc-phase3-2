@@ -3,9 +3,9 @@ package controller
 import (
 	"context"
 	"log"
-	"server/config"
-	pb "server/pb"
-	"server/repo"
+	"server2/config"
+	pb "server2/pb"
+	"server2/repo"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

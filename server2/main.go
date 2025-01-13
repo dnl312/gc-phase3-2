@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
-	"server/config"
-	"server/controller"
-	"server/repo"
+	"server2/config"
+	"server2/controller"
+	"server2/repo"
 
 	"github.com/joho/godotenv"
 )

@@ -6,8 +6,8 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"server/middleware"
-	"server/pb"
+	"server2/middleware"
+	"server2/pb"
 	"strings"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
