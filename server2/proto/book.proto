@@ -59,3 +59,7 @@ message BorrowedBook {
 	string borrowed_date = 4;
 	string return_date = 5;
 }
+
+message Status{
+	string status = 1;
+}
