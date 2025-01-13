@@ -41,7 +41,7 @@ func Echo(e *echo.Echo, uc controller.UserController, bc controller.BookControll
 	e.GET("/books/update-status", bc.UpdateBookStatus)
 	c := cron.New()
 	_, err := c.AddFunc("@every 5s", func() {
-		_, err := http.Get("http://localhost:8080/books/update-status")
+		_, err := http.Get("http://localhost/books/update-status")
 		if err != nil {
 			fmt.Println("Error triggering update-status endpoint:", err)
 		}
