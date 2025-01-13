@@ -1,0 +1,115 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple library API
+  title: Library API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: Get all books
+      parameters:
+      - description: Book status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get all books
+      tags:
+      - books
+  /books/borrow:
+    post:
+      consumes:
+      - application/json
+      description: Borrow a book
+      parameters:
+      - description: User ID
+        in: body
+        name: userId
+        required: true
+        schema:
+          type: string
+      - description: Book ID
+        in: body
+        name: bookId
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Borrow a book
+      tags:
+      - books
+  /books/return:
+    post:
+      consumes:
+      - application/json
+      description: Return a book
+      parameters:
+      - description: User ID
+        in: body
+        name: userId
+        required: true
+        schema:
+          type: string
+      - description: Book ID
+        in: body
+        name: bookId
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Return a book
+      tags:
+      - books
+  /books/update-status:
+    get:
+      consumes:
+      - application/json
+      description: Update book status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update book status
+      tags:
+      - books
+swagger: "2.0"

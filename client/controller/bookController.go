@@ -22,6 +22,16 @@ func NewBookController(client pb.BookServiceClient) BookController {
 	}
 }
 
+// @Summary Get all books
+// @Description Get all books
+// @Tags books
+// @Accept  json
+// @Produce  json
+// @Param status query string false "Book status"
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 500 {object} map[string]string
+// @Router /books [get]
 func (b BookController) GetAllBooks(ctx echo.Context) error{
 
 	   	// claims, err := helpers.GetClaims(ctx)
@@ -70,6 +80,16 @@ func (b BookController) GetAllBooks(ctx echo.Context) error{
 		})
 }
 
+// @Summary Borrow a book
+// @Description Borrow a book
+// @Tags books
+// @Accept  json
+// @Produce  json
+// @Param request body model.BookTransaction true "Book transaction details"
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]string
+//@failure 500 {object} map[string]string
+// @Router /books/borrow [post]
 func (b BookController) BorrowBook(ctx echo.Context) error{
 		var req model.BookTransaction
 		if err := ctx.Bind(&req); err != nil {
@@ -94,6 +114,16 @@ func (b BookController) BorrowBook(ctx echo.Context) error{
 		})
 }
 
+//@summary Return a book
+//@description Return a book
+//@tags books
+//@accept json
+//@produce json
+//@param request body model.BookTransaction true "User ID and Book ID"
+//@security ApiKeyAuth
+//@success 200 {object} map[string]string
+//@failure 500 {object} map[string]string
+//@router /books/return [post]
 func (b BookController) ReturnBook(ctx echo.Context) error{
 		var req model.BookTransaction
 		if err := ctx.Bind(&req); err != nil {
@@ -119,7 +149,13 @@ func (b BookController) ReturnBook(ctx echo.Context) error{
 		})
 }
 
-
+//@summary Update book status
+//@description Update book status
+//@tags books
+//@accept json
+//@produce json
+//@success 200 {object} map[string]string
+//@router /books/update-status [get]
 func (b BookController) UpdateBookStatus(ctx echo.Context) error{
 
 	serviceCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

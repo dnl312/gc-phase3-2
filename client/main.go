@@ -14,6 +14,11 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// @title Library API
+// @version 1.0
+// @description This is a simple library API
+// @host localhost:8080
+// @BasePath /
 func main() {
 	// conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	// if err != nil {

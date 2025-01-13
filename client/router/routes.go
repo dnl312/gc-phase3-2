@@ -52,21 +52,4 @@ func Echo(e *echo.Echo, uc controller.UserController, bc controller.BookControll
 	}
 	c.Start()
 
-	// c := cron.New()
-    // _, err := c.AddFunc("@every 5s", func() {
-    //     _, err := http.Get("http://localhost:8080/books/update-status")
-    //     if err != nil {
-    //         fmt.Println("Error triggering update-status endpoint:", err)
-    //     }
-    // })
-    // if err != nil {
-    //     // Handle error
-    //     fmt.Println("Error setting up cron job:", err)
-    // }
-    // c.Start()
-	
-	// payment := e.Group("/payment")
-	// {
-	// 	payment.POST("/xendit/update", oc.PaymentUpdate)
-	// }
 }

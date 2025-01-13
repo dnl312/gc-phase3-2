@@ -22,6 +22,14 @@ func NewUserController(client pb.UserServiceClient) UserController {
 	}
 }
 
+// @Summary     Login a user
+// @Description Login a user
+// @Tags        customer
+// @Accept      json
+// @Produce     json
+// @Param       request body dto.LoginRequest true "User login details"
+// @Success     200 {object} dto.SwaggerResponseLogin
+// @Failure     500 {object} utils.ErrResponse
 func (u UserController) LoginUser (ctx echo.Context) error{
 		var req model.LoginRequest
 		if err := ctx.Bind(&req); err != nil {
@@ -47,6 +55,15 @@ func (u UserController) LoginUser (ctx echo.Context) error{
 		})
 }
 
+// @Summary     Register a new user
+// @Description Register a new user with the role 'User'
+// @Tags        customer
+// @Accept      json
+// @Produce     json
+// @Param       request body dto.RegisterUser true "User registration details"
+// @Success     201 {object} dto.SwaggerResponseRegister
+// @Failure     500 {object} utils.ErrResponse
+// @Router      /users/register [post]
 func (u UserController) RegisterUser (ctx echo.Context) error{
 	var req model.RegisterUser
 	if err := ctx.Bind(&req); err != nil {
@@ -64,7 +81,7 @@ func (u UserController) RegisterUser (ctx echo.Context) error{
 	}
 	log.Printf("Register Response: %s", r.GetMessage())
 
-	return ctx.JSON(http.StatusOK, map[string]string{
+	return ctx.JSON(http.StatusCreated, map[string]string{
 		"message": r.Message,
 	})
 }
