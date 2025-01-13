@@ -1,4 +1,32 @@
 basePath: /
+definitions:
+  model.BookTransaction:
+    properties:
+      bookID:
+        type: string
+      userID:
+        type: string
+    type: object
+  model.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.RegisterUser:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -24,6 +52,12 @@ paths:
           schema:
             additionalProperties: true
             type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       security:
       - ApiKeyAuth: []
       summary: Get all books
@@ -35,23 +69,23 @@ paths:
       - application/json
       description: Borrow a book
       parameters:
-      - description: User ID
+      - description: Book transaction details
         in: body
-        name: userId
+        name: request
         required: true
         schema:
-          type: string
-      - description: Book ID
-        in: body
-        name: bookId
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/model.BookTransaction'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
             additionalProperties:
               type: string
@@ -67,23 +101,23 @@ paths:
       - application/json
       description: Return a book
       parameters:
-      - description: User ID
+      - description: User ID and Book ID
         in: body
-        name: userId
+        name: request
         required: true
         schema:
-          type: string
-      - description: Book ID
-        in: body
-        name: bookId
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/model.BookTransaction'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
             additionalProperties:
               type: string
@@ -107,9 +141,67 @@ paths:
             additionalProperties:
               type: string
             type: object
-      security:
-      - ApiKeyAuth: []
       summary: Update book status
       tags:
       - books
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: User login details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login a user
+      tags:
+      - User
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the role 'User'
+      parameters:
+      - description: User registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - User
 swagger: "2.0"

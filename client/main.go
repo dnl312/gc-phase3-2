@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // @title Library API
@@ -49,8 +50,10 @@ func main() {
 
 	userController := controller.NewUserController(authClient)
 	bookController := controller.NewBookController(bookClient)
-	
+
 	router.Echo(e, userController, bookController)
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 ////////////////////////////////////////
 	
