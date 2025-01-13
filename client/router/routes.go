@@ -38,20 +38,32 @@ func Echo(e *echo.Echo, uc controller.UserController, bc controller.BookControll
 		book.POST("/borrow", bc.BorrowBook)	
 		book.POST("/return", bc.ReturnBook)
 	}
-	e.POST("/books/update-status", bc.UpdateBookStatus)
-
+	e.GET("/books/update-status", bc.UpdateBookStatus)
 	c := cron.New()
-    _, err := c.AddFunc("@every 5s", func() {
-        _, err := http.Get("http://localhost:8080/books/update-status")
-        if err != nil {
-            fmt.Println("Error triggering update-status endpoint:", err)
-        }
-    })
-    if err != nil {
-        // Handle error
-        fmt.Println("Error setting up cron job:", err)
-    }
-    c.Start()
+	_, err := c.AddFunc("@every 5s", func() {
+		_, err := http.Get("http://localhost:8080/books/update-status")
+		if err != nil {
+			fmt.Println("Error triggering update-status endpoint:", err)
+		}
+	})
+	if err != nil {
+		// Handle error
+		fmt.Println("Error setting up cron job:", err)
+	}
+	c.Start()
+
+	// c := cron.New()
+    // _, err := c.AddFunc("@every 5s", func() {
+    //     _, err := http.Get("http://localhost:8080/books/update-status")
+    //     if err != nil {
+    //         fmt.Println("Error triggering update-status endpoint:", err)
+    //     }
+    // })
+    // if err != nil {
+    //     // Handle error
+    //     fmt.Println("Error setting up cron job:", err)
+    // }
+    // c.Start()
 	
 	// payment := e.Group("/payment")
 	// {
