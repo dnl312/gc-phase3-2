@@ -1,259 +1,230 @@
 {
-	"info": {
-		"_postman_id": "f3b0f8bf-8717-437d-b43b-5716b05209f9",
-		"name": "graded-challenge P3W2",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "21229850"
-	},
-	"item": [
-		{
-			"name": "users/login",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"Johnz\",\n  \"password\": \"example_password\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"login"
-					]
-				},
-				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/login\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\"\n}'\n"
-			},
-			"response": []
-		},
-		{
-			"name": "users/register",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"Johnz2\",\n  \"password\": \"example_password\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"register"
-					]
-				},
-				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/register\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\",\n  \"phone_number\": \"0123456789\",\n  \"address\": \"123 Elm Street\"\n}'\n"
-			},
-			"response": []
-		},
-		{
-			"name": "cron update status",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"Johnz2\",\n  \"password\": \"example_password\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"register"
-					]
-				},
-				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/register\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\",\n  \"phone_number\": \"0123456789\",\n  \"address\": \"123 Elm Street\"\n}'\n"
-			},
-			"response": []
-		},
-		{
-			"name": "get all books",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer YOUR_ACCESS_TOKEN"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/books?status=Available",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"books"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "123",
-							"disabled": true
-						},
-						{
-							"key": "status",
-							"value": "Available"
-						}
-					]
-				},
-				"description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
-			},
-			"response": []
-		},
-		{
-			"name": "borrow book",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzY5NTAyMjgsInVzZXJpZCI6ImI4MmNiZmRlLTcwNTQtNGMwMC1iZjE5LWFiNGZkZGJhMjg2OSJ9.9o3kpXkoSQIvBqYLAw39M-Bc5csVA7LEivu3GR2juTw"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"UserID\":\"b82cbfde-7054-4c00-bf19-ab4fddba2869\",\n    \"BookID\":\"e9c77c98-5678-4f4f-8abc-d8e456789def\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/books/borrow",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"books",
-						"borrow"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "123",
-							"disabled": true
-						}
-					]
-				},
-				"description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
-			},
-			"response": []
-		},
-		{
-			"name": "return book",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer YOUR_ACCESS_TOKEN"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"UserID\":\"b82cbfde-7054-4c00-bf19-ab4fddba2869\",\n    \"BookID\":\"e9c77c98-5678-4f4f-8abc-d8e456789def\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/books/return",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"books",
-						"return"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "123",
-							"disabled": true
-						}
-					]
-				},
-				"description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "f3b0f8bf-8717-437d-b43b-5716b05209f9",
+    "name": "graded-challenge P3W2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21229850"
+  },
+  "item": [
+    {
+      "name": "users/login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"JohnDoe\",\n  \"password\": \"example_password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["users", "login"]
+        },
+        "description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/login\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\"\n}'\n"
+      },
+      "response": []
+    },
+    {
+      "name": "users/register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"Johnz3\",\n  \"password\": \"example_password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["users", "register"]
+        },
+        "description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/register\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\",\n  \"phone_number\": \"0123456789\",\n  \"address\": \"123 Elm Street\"\n}'\n"
+      },
+      "response": []
+    },
+    {
+      "name": "cron update status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/books/update-status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["books", "update-status"]
+        },
+        "description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/register\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\",\n  \"phone_number\": \"0123456789\",\n  \"address\": \"123 Elm Street\"\n}'\n"
+      },
+      "response": []
+    },
+    {
+      "name": "get all books",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzY5NTk2MzMsInVzZXJpZCI6ImI4MmNiZmRlLTcwNTQtNGMwMC1iZjE5LWFiNGZkZGJhMjg2OSJ9.PGXX0LdiR1F1PCZA78sVutULn6BFoWQg2u9u6AT9wvs"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/books?status=Available",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["books"],
+          "query": [
+            {
+              "key": "userId",
+              "value": "123",
+              "disabled": true
+            },
+            {
+              "key": "status",
+              "value": "Available"
+            }
+          ]
+        },
+        "description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
+      },
+      "response": []
+    },
+    {
+      "name": "borrow book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcwMjMxNTUsInVzZXJpZCI6ImI4MmNiZmRlLTcwNTQtNGMwMC1iZjE5LWFiNGZkZGJhMjg2OSJ9.j34rPPj2LHgHTgY7CofpzuhPA6V6s_E9ry0JcpxKA5M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"UserID\":\"b82cbfde-7054-4c00-bf19-ab4fddba2869\",\n    \"BookID\":\"e9c77c98-5678-4f4f-8abc-d8e456789def\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/books/borrow",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["books", "borrow"],
+          "query": [
+            {
+              "key": "userId",
+              "value": "123",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
+      },
+      "response": []
+    },
+    {
+      "name": "return book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcwMjMxNTUsInVzZXJpZCI6ImI4MmNiZmRlLTcwNTQtNGMwMC1iZjE5LWFiNGZkZGJhMjg2OSJ9.j34rPPj2LHgHTgY7CofpzuhPA6V6s_E9ry0JcpxKA5M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"UserID\":\"b82cbfde-7054-4c00-bf19-ab4fddba2869\",\n    \"BookID\":\"e9c77c98-5678-4f4f-8abc-d8e456789def\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/books/return",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["books", "return"],
+          "query": [
+            {
+              "key": "userId",
+              "value": "123",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Generated from cURL: curl -X GET \"http://localhost:8080/books?userId=123&status=Available\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\"\n"
+      },
+      "response": []
+    }
+  ]
 }
