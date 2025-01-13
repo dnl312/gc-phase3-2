@@ -118,3 +118,20 @@ func (b BookController) ReturnBook(ctx echo.Context) error{
 			"message": r.Message,
 		})
 }
+
+
+func (b BookController) UpdateBookStatus(ctx echo.Context) error{
+
+	serviceCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+	r, err := b.Client.UpdateBookStatus(serviceCtx, &pb.UpdateBookStatusRequest{})
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"message": "could not update book status"})
+		}	
+		log.Printf("Update Status Response: %s", r.GetMessage())
+	
+		return ctx.JSON(http.StatusOK, map[string]string{
+			"message": r.Message,
+		})
+	}

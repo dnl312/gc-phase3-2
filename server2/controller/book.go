@@ -13,12 +13,12 @@ import (
 
 type Server struct {
 	pb.UnimplementedBookServiceServer
-	Repository repo.BookRepository
+	Repository repo.BookInterface
 }
 
-func NewBookController(r repo.BookInterce) Server {
+func NewBookController(r repo.BookInterface) Server {
 	return Server{
-		Repository: r.(repo.BookRepository),
+		Repository: r,
 	}
 }
 
@@ -60,4 +60,14 @@ func (b *Server) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest) (*pb
 	}
 
 	return &pb.ReturnBookResponse{Message: "Book returned successfully"}, nil
+}
+
+func (b *Server) UpdateBookStatus(ctx context.Context, req *pb.UpdateBookStatusRequest) (*pb.UpdateBookStatusResponse, error) {
+	err := repo.NewBookRepository(config.DB).UpdateBookStatus()
+	if err != nil {
+		log.Printf("Error running task: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to run task: %v", err)
+	}
+
+	return &pb.UpdateBookStatusResponse{Message: "Task successfully"}, nil
 }

@@ -8,6 +8,7 @@ service BookService {
 	rpc GetAllBooks(GetAllBooksRequest) returns (GetAllBooksResponse);
 	rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
 	rpc ReturnBook(ReturnBookRequest) returns (ReturnBookResponse);
+	rpc UpdateBookStatus(UpdateBookStatusRequest) returns (UpdateBookStatusResponse);
 }
 
 message GetAllBooksRequest {
@@ -33,6 +34,13 @@ message ReturnBookRequest {
 }
 
 message ReturnBookResponse {
+	string message = 1;
+}
+
+message UpdateBookStatusRequest {
+}
+
+message UpdateBookStatusResponse {
 	string message = 1;
 }
 

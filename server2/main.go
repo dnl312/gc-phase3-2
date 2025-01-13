@@ -113,7 +113,7 @@ func main() {
 	log.Printf("Connected to database")
 	defer config.CloseDB()
 	bookRepository := repo.NewBookRepository(db)
-	bookController := controller.NewBookController(bookRepository)
+	bookController := controller.NewBookController(&bookRepository)
 
 	config.ListenAndServeGrpc(&bookController)
 	// config.ClearPreparedStatements()

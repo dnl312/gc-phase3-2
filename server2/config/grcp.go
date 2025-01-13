@@ -18,6 +18,14 @@ import (
 )
 
 func UnaryAuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	excludedMethods := map[string]bool{
+		"/repo.BookService/UpdateBookStatus": true,
+	}
+
+	if _, ok := excludedMethods[info.FullMethod]; ok {
+		return handler(ctx, req)
+	}
+
 	ctx, err := AuthInterceptor(ctx)
 	if err != nil {
 		return nil, err
@@ -63,8 +71,8 @@ func ListenAndServeGrpc(controller pb.BookServiceServer) {
 	}
 	
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(UnaryAuthInterceptor),
 		grpc.ChainUnaryInterceptor(
+			UnaryAuthInterceptor,
 			logging.UnaryServerInterceptor(middleware.NewInterceptorLogger()),
 		),
 	)

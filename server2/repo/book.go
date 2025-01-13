@@ -97,3 +97,27 @@ func (r BookRepository) ReturnBook (userId string, bookId string) error {
 
 	return nil
 }
+
+func (r BookRepository) UpdateBookStatus () error {
+	var borrowedBooks []model.BorrowedBook
+	err := r.DB.Table("borrowedbooks_g2p3w2").Where("returndate IS NULL").Scan(&borrowedBooks).Error
+	if err != nil {
+		return err
+	}
+
+	for _, borrowedBook := range borrowedBooks {
+		if time.Since(borrowedBook.Borroweddate) > 24*time.Hour {
+			err = r.DB.Table("books_g2p3w2").Where("id = ?", borrowedBook.Bookid).Updates(map[string]interface{}{"userid": nil, "status": "Available"}).Error
+			if err != nil {
+				return err
+			}
+
+			err = r.DB.Table("borrowedbooks_g2p3w2").Where("bookid = ? AND userid = ? AND returndate IS NULL", borrowedBook.Bookid, borrowedBook.Userid).Updates(map[string]interface{}{"returndate": time.Now()}).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
