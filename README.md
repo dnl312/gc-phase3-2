@@ -85,4 +85,4 @@ Informasi yang tidak dicantumkan pada file ini harap dipastikan/ditanyakan kemba
 
 ### Deployment Notes
 
-- Deployed url: ****\_**** (isi dengan url hasil deployment anda)
+- Deployed url: \***\*\[\_](https://bootcamp-phase3-daniel-326225629472.asia-southeast2.run.app)\*\*** (isi dengan url hasil deployment anda)

@@ -68,8 +68,11 @@
     },
     {
       "name": "cron update status",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
       "request": {
-        "method": "POST",
+        "method": "GET",
         "header": [
           {
             "key": "Content-Type",
@@ -86,10 +89,14 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/books/update-status",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "https://bootcamp-phase3-daniel-326225629472.asia-southeast2.run.app/books/update-status",
+          "protocol": "https",
+          "host": [
+            "bootcamp-phase3-daniel-326225629472",
+            "asia-southeast2",
+            "run",
+            "app"
+          ],
           "path": ["books", "update-status"]
         },
         "description": "Generated from cURL: curl -X POST \"http://localhost:8080/users/register\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"example_password\",\n  \"phone_number\": \"0123456789\",\n  \"address\": \"123 Elm Street\"\n}'\n"
