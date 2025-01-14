@@ -65,7 +65,7 @@ func AuthInterceptor(ctx context.Context) (context.Context, error) {
 func ListenAndServeGrpc(controller pb.BookServiceServer) {
 	port := os.Getenv("GRPC_PORT")
 	
-	lis, err := net.Listen("tcp", ":" + port)
+	lis, err := net.Listen("tcp", "0.0.0.0:" + port)
 	if err != nil {
 		log.Fatal(err)
 	}
